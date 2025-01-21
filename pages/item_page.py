@@ -9,7 +9,7 @@ class ItemPage(BasePage):
     TITLE = (By.CSS_SELECTOR, ".inventory_details_name")
 
     def __init__(self, driver):
-        self.driver: WebDriver = driver
+        super().__init__(driver)
 
     def add_product(self):
         #self.driver.find_element(*self.ADD_TO_CART).click()

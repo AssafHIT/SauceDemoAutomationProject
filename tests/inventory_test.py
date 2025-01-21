@@ -46,7 +46,7 @@ class TestInventory:
         cart_count = product_page.get_cart_count()
         assert cart_count > 0, "Cart count did not increase after adding a product!"
 
-        product_page.remove_from_cart(product_index)
+        product_page.remove_from_cart(product_index)    
 
         try:
             WebDriverWait(self.driver, 10).until(

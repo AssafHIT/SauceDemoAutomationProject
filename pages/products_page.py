@@ -15,7 +15,7 @@ class ProductsPage(BasePage):
 
 
     def __init__(self, driver):
-        self.driver: WebDriver = driver
+        super().__init__(driver)
 
     def choose_product(self, index):
         product_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .inventory_item_name")

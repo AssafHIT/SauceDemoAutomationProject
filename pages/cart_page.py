@@ -24,7 +24,7 @@ class CartPage(BasePage):
 
 
     def __init__(self, driver):
-        self.driver: WebDriver = driver
+        super().__init__(driver)
 
     def checkout(self):
         #self.driver.find_element(*self.CHECKOUT_BTN).click()

@@ -17,7 +17,7 @@ class LoginPage(BasePage):
 
 
     def __init__(self, driver):
-        self.driver: WebDriver = driver
+        super().__init__(driver)
 
     def fill_info(self, username, password):
         self.fill_text(self.USER_NAME, username)  # Use BasePage's fill_text
