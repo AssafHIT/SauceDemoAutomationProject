@@ -1,54 +1,72 @@
+import pytest
 import allure
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
+from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
 
+
+@pytest.fixture(scope="function")
+def driver():
+    """Fixture to set up and tear down WebDriver."""
+    options = Options()
+    options.add_experimental_option("detach", False)
+    driver = webdriver.Chrome(options=options)
+    driver.maximize_window()
+
+    yield driver  # Provide the WebDriver instance to the test
+
+    driver.quit()  # Close browser after test
+
+@pytest.fixture(scope="function")
+def login_page(driver):
+    return LoginPage(driver)
+
+@pytest.fixture(scope="function")
+def products_page(driver):
+    return ProductsPage(driver)
+
+@allure.suite("Sort Functionality Tests")
 class TestSort:
 
-    @allure.title("Validate Price Sorting Functionality (Low to High)")
-    @allure.description("This test sorts the products by price (low to high) and verifies the sorting order.")
-    def test_01_price_sort_functionality_ascending(self):
-        login_page = LoginPage(self.driver)
+    base_url = "https://www.saucedemo.com"
+
+    @pytest.mark.critical
+    @pytest.mark.parametrize(
+        "sorting_option, is_descending, attribute, description",
+        [
+            (2, False, "price", "Price Sorting (Low to High)"),
+            (3, True, "price", "Price Sorting (High to Low)"),
+            (1, True, "name", "Name Sorting (Z to A)"),
+            (0, False, "name", "Name Sorting (A to Z)"),
+        ],
+    )
+    @allure.title("{description}")
+    @allure.description("This test validates product sorting by {attribute}.")
+    def test_01_sort_functionality(self, driver, sorting_option, is_descending, attribute, description, login_page, products_page):
+        """
+        Generalized test for validating sorting functionality.
+
+        :param driver: WebDriver instance
+        :param sorting_option: Sorting dropdown option index
+        :param is_descending: Whether sorting is expected to be descending
+        :param attribute: Attribute to validate (price or name)
+        :param description: Test description for Allure report
+        """
+        driver.get(self.base_url)
         login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_page.choose_sorting(2)
-        product_prices = product_page.get_product_prices()
-        assert product_prices == sorted(product_prices), "The products are not sorted by price (low to high)"
+        products_page.choose_sorting(sorting_option)
 
-    @allure.title("Validate Price Sorting Functionality (High to Low)")
-    @allure.description("This test sorts the products by price (high to low) and verifies the sorting order.")
-    def test_02_price_sort_functionality_descending(self):
-        login_page = LoginPage(self.driver)
-        login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_page.choose_sorting(3)
-        product_prices = product_page.get_product_prices()
-        assert product_prices == sorted(product_prices, reverse=True), "The products are not sorted by price (high to low)"
+        # Validate sorting
+        if attribute == "price":
+            product_values = products_page.get_product_prices()
+        elif attribute == "name":
+            product_values = [name.text for name in products_page.get_product_names()]
+        else:
+            raise ValueError("Invalid attribute specified for sorting validation.")
 
-    @allure.title("Validate Name Sorting Functionality (Z to A)")
-    @allure.description("This test sorts the products by name (Z to A) and verifies the sorting order.")
-    def test_03_name_sort_functionality_descending(self):
-        login_page = LoginPage(self.driver)
-        login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_page.choose_sorting(1)
-        product_names = [name.text for name in product_page.get_product_names()]
-        assert product_names == sorted(product_names, reverse=True), "The products are not sorted by name (Z to A)"
-
-    @allure.title("Validate Name Sorting Functionality (A to Z)")
-    @allure.description("This test sorts the products by name (A to Z) and verifies the sorting order.")
-    def test_04_name_sort_functionality_ascending(self):
-        login_page = LoginPage(self.driver)
-        login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_page.choose_sorting(0)
-        product_names = [name.text for name in product_page.get_product_names()]
-        assert product_names == sorted(product_names), "The products are not sorted by name (A to Z)"
-
-
-
-
-
-
-
-
-
+        expected_values = sorted(product_values, reverse=is_descending)
+        assert product_values == expected_values, (
+            f"The products are not sorted by {attribute} "
+            f"({'descending' if is_descending else 'ascending'} order)."
+        )

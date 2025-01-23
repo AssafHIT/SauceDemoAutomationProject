@@ -1,4 +1,6 @@
 import time
+
+from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -59,3 +61,16 @@ class ProductsPage(BasePage):
         product_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .inventory_item_name")
         return self.get_text(product_selector)
         #return self.driver.find_element(*product_selector).text
+
+    def is_cart_item_present(self, product_index):
+        """
+        Check if the cart icon indicates the product is still in the cart.
+        This could involve checking for the product name, ID, or cart icon count.
+        """
+        try:
+            # Replace the following line with the actual locator for the cart item
+            cart_item_locator = (By.CSS_SELECTOR, f"#cart_item_{product_index}")
+            self.driver.find_element(*cart_item_locator)
+            return True
+        except NoSuchElementException:
+            return False

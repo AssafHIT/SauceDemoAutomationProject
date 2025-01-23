@@ -1,74 +1,108 @@
 import random
-import time
+import pytest
 import allure
-from selenium.common import TimeoutException
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from pages.item_page import ItemPage
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
 
 
+@pytest.fixture(scope="function")
+def driver():
+    """Fixture to set up and tear down WebDriver."""
+    options = Options()
+    options.add_experimental_option("detach", False)
+    driver = webdriver.Chrome(options=options)
+    driver.maximize_window()
+
+    yield driver  # Provide the WebDriver instance to the test
+
+    driver.quit()  # Close browser after test
+
+@pytest.fixture(scope="function")
+def login_page(driver):
+    return LoginPage(driver)
+
+@pytest.fixture(scope="function")
+def products_page(driver):
+    return ProductsPage(driver)
+
+@pytest.fixture(scope="function")
+def item_page(driver):
+    return ItemPage(driver)
+
+@allure.suite("Inventory Management Tests")
 class TestInventory:
-    @allure.title("Add Single Item to Cart Test")
-    @allure.description("This test validates that adding a single random item to the cart results in the cart count being updated to 1.")
-    def test_01_add_single_item_to_cart(self):
-        login_page = LoginPage(self.driver)
-        login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_page.add_to_cart(random.randint(1, 6))
-        cart_count = product_page.get_cart_count()
-        assert cart_count == 1, f"Expected 1 items in cart, but got {cart_count}"
 
-    @allure.title("Add Multiple Items to Cart Test")
-    @allure.description("This test validates that adding multiple random items to the cart results in the correct cart count of 3 items.")
-    def test_02_add_multiple_items(self):
-        login_page = LoginPage(self.driver)
-        login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
+    base_url = "https://www.saucedemo.com"
 
-        available_products = [1, 2, 3, 4, 5, 6]
-        for _ in range(3):
+    @pytest.mark.critical
+    @pytest.mark.parametrize(
+        "item_count, description",
+        [
+            (1, "Add a Single Item to Cart"),
+            (3, "Add Multiple Items to Cart"),
+        ],
+    )
+    @allure.title("{description}")
+    @allure.description("This test validates adding items to the cart updates the cart count correctly.")
+    def test_01_add_items_to_cart(self, driver, item_count, description, login_page, products_page):
+        driver.get(self.base_url)
+        login_page.fill_info("standard_user", "secret_sauce")
+
+
+        available_products = list(range(1, 7))
+        for _ in range(item_count):
             product_index = random.choice(available_products)
             available_products.remove(product_index)
-            product_page.add_to_cart(product_index)
+            products_page.add_to_cart(product_index)
 
-        cart_count = product_page.get_cart_count()
-        assert cart_count == 3, f"Expected 3 items in cart, but got {cart_count}"
+        cart_count = products_page.get_cart_count()
+        assert cart_count == item_count, f"Expected {item_count} items in cart, but got {cart_count}."
 
+    @pytest.mark.high
     @allure.title("Remove Item from Cart Test")
-    @allure.description("This test validates that an item can be successfully removed from the cart and the cart count decreases accordingly.")
-    def test_03_remove_item_from_cart(self):
-        login_page = LoginPage(self.driver)
+    @allure.description("This test validates removing an item from the cart decreases the cart count correctly.")
+    def test_02_remove_item_from_cart(self, driver, login_page, products_page):
+        driver.get(self.base_url)
         login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        product_index = random.randint(1, 6)
-        product_page.add_to_cart(product_index)
-        cart_count = product_page.get_cart_count()
-        assert cart_count > 0, "Cart count did not increase after adding a product!"
 
-        product_page.remove_from_cart(product_index)    
+        product_index = random.randint(1, 6)
+        products_page.add_to_cart(product_index)
+        initial_cart_count = products_page.get_cart_count()
+        assert initial_cart_count > 0, "Cart count did not increase after adding a product!"
+
+        products_page.remove_from_cart(product_index)
 
         try:
-            WebDriverWait(self.driver, 10).until(
-                lambda driver: driver.find_elements(*ProductsPage.CART_COUNT) == []
+            WebDriverWait(driver, 10).until(
+                lambda driver: not products_page.is_cart_item_present(product_index)
             )
-            # If the cart badge disappears ( = 0)
             updated_cart_count = 0
         except TimeoutException:
+            updated_cart_count = products_page.get_cart_count()
 
-            updated_cart_count = product_page.get_cart_count()
+        assert updated_cart_count == initial_cart_count - 1, (
+            f"Expected cart count to decrease to {initial_cart_count - 1}, "
+            f"but got {updated_cart_count}."
+        )
 
-        assert updated_cart_count == cart_count - 1, f"Expected cart count to decrease to {cart_count - 1}, "f"but got {updated_cart_count}."
-
-    @allure.title("Validate Item Details Test")
-    @allure.description("This test opens a product details page and validates that the correct product details are shown.")
-    def test_04_valid_item_details(self):
-        login_page = LoginPage(self.driver)
+    @pytest.mark.medium
+    @allure.title("Validate Product Details Test")
+    @allure.description("This test opens a product details page and validates the correct product details are displayed.")
+    def test_03_validate_product_details(self, driver, login_page, products_page, item_page):
+        driver.get(self.base_url)
         login_page.fill_info("standard_user", "secret_sauce")
-        product_page = ProductsPage(self.driver)
-        item_page = ItemPage(self.driver)
+
 
         product_index = random.randint(1, 6)
-        product_name = product_page.get_single_product_name(product_index)
-        product_page.choose_product(product_index)
-        assert item_page.get_product_title() == product_name, "Wrong product!"
+        expected_product_name = products_page.get_single_product_name(product_index)
+        products_page.choose_product(product_index)
+        actual_product_name = item_page.get_product_title()
+
+        assert actual_product_name == expected_product_name, (
+            f"Expected product name to be '{expected_product_name}', but got '{actual_product_name}'."
+        )
