@@ -23,13 +23,8 @@ class LoginPage(BasePage):
         self.fill_text(self.USER_NAME, username)  # Use BasePage's fill_text
         self.fill_text(self.PASSWORD, password)  # Use BasePage's fill_text
         self.click(self.LOGIN_BTN)
-        #self.driver.find_element(*self.USER_NAME).send_keys(username)
-        #self.driver.find_element(*self.PASSWORD).send_keys(password)
-        #self.driver.find_element(*self.LOGIN_BTN).click()
 
 
 
     def get_error_message(self):
-        #error_message = self.driver.find_element(*self.ERROR_MSG).text
-        #return error_message
         return self.get_text(self.ERROR_MSG)

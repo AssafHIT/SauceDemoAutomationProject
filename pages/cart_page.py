@@ -17,7 +17,6 @@ class CartPage(BasePage):
     PRODUCTS_TITLES = (By.CSS_SELECTOR, ".inventory_item_name")
     CART_ITEMS = (By.CSS_SELECTOR, ".cart_item_label")
     REMOVE_BUTTONS = (By.CSS_SELECTOR, "button[data-test^='remove-']")
-
     CHECKOUT_MESSAGE = (By.CSS_SELECTOR, "#checkout_complete_container h2")
     CHECKOUT_INFO_ERROR_MSG = (By.CSS_SELECTOR, ".checkout_info h3")
 
@@ -31,13 +30,9 @@ class CartPage(BasePage):
         self.click(self.CHECKOUT_BTN)
 
     def fill_info(self, firstname, lastname, zip):
-        #self.driver.find_element(*self.FIRST_NAME).send_keys(firstname)
         self.fill_text(self.FIRST_NAME, firstname)
-        #self.driver.find_element(*self.LAST_NAME).send_keys(lastname)
         self.fill_text(self.LAST_NAME, lastname)
-        #self.driver.find_element(*self.ZIP).send_keys(zip)
         self.fill_text(self.ZIP, zip)
-        #self.driver.find_element(*self.CONTINUE_BTN).click()
         self.click(self.CONTINUE_BTN)
         try:
             # Wait for the Finish button to be clickable (timeout of 10 seconds)

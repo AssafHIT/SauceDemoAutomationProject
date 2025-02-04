@@ -21,23 +21,19 @@ class ProductsPage(BasePage):
 
     def choose_product(self, index):
         product_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .inventory_item_name")
-        #self.driver.find_element(*product_selector).click()
         self.click(product_selector)
         time.sleep(1)
 
     def add_to_cart(self, index):
         add_to_cart_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .btn.btn_primary.btn_small.btn_inventory")
-        #self.driver.find_element(*add_to_cart_selector).click()
         self.click(add_to_cart_selector)
 
     def remove_from_cart(self, index):
         remove_from_cart_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .btn.btn_secondary.btn_small.btn_inventory ")
-        #self.driver.find_element(*remove_from_cart_selector).click()
         self.click(remove_from_cart_selector)
 
 
     def go_to_shopping_cart(self):
-        #self.driver.find_element(*self.SHOPPING_CART).click()
         self.click(self.SHOPPING_CART)
 
     def choose_sorting(self, index):
@@ -60,7 +56,6 @@ class ProductsPage(BasePage):
     def get_single_product_name(self, index):
         product_selector = (By.CSS_SELECTOR, f".inventory_item:nth-of-type({index}) .inventory_item_name")
         return self.get_text(product_selector)
-        #return self.driver.find_element(*product_selector).text
 
     def is_cart_item_present(self, product_index):
         """

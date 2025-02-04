@@ -12,15 +12,12 @@ class ItemPage(BasePage):
         super().__init__(driver)
 
     def add_product(self):
-        #self.driver.find_element(*self.ADD_TO_CART).click()
         self.click(self.ADD_TO_CART)
 
 
     def back_to_products(self):
-        #self.driver.find_element(*self.BACK).click()
         self.click(self.BACK)
 
     def get_product_title(self):
-        #title = self.driver.find_element(*self.TITLE).text
         title =  self.get_text(self.TITLE)
         return title
