@@ -1,38 +1,8 @@
 import random
 import pytest
 import allure
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
-from pages.item_page import ItemPage
-from pages.login_page import LoginPage
-from pages.products_page import ProductsPage
-
-
-@pytest.fixture(scope="function")
-def driver():
-    """Fixture to set up and tear down WebDriver."""
-    options = Options()
-    options.add_experimental_option("detach", False)
-    driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
-
-    yield driver  # Provide the WebDriver instance to the test
-
-    driver.quit()  # Close browser after test
-
-@pytest.fixture(scope="function")
-def login_page(driver):
-    return LoginPage(driver)
-
-@pytest.fixture(scope="function")
-def products_page(driver):
-    return ProductsPage(driver)
-
-@pytest.fixture(scope="function")
-def item_page(driver):
-    return ItemPage(driver)
 
 @allure.suite("Inventory Management Tests")
 class TestInventory:
@@ -96,7 +66,6 @@ class TestInventory:
     def test_03_validate_product_details(self, driver, login_page, products_page, item_page):
         driver.get(self.base_url)
         login_page.fill_info("standard_user", "secret_sauce")
-
 
         product_index = random.randint(1, 6)
         expected_product_name = products_page.get_single_product_name(product_index)

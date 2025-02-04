@@ -1,10 +1,7 @@
 import time
-
 from selenium.common import NoSuchElementException
-from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
-
 from pages.BasePage import BasePage
 
 class ProductsPage(BasePage):

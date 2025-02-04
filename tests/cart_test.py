@@ -1,39 +1,6 @@
 import random
-
 import allure
 import pytest
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from pages.login_page import LoginPage
-from pages.products_page import ProductsPage
-from pages.cart_page import CartPage
-
-
-@pytest.fixture(scope="function")
-def driver():
-    """Fixture to set up and tear down WebDriver."""
-    options = Options()
-    options.add_experimental_option("detach", False)
-    driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
-
-    yield driver
-    driver.quit()
-
-
-@pytest.fixture(scope="function")
-def login_page(driver):
-    return LoginPage(driver)
-
-
-@pytest.fixture(scope="function")
-def products_page(driver):
-    return ProductsPage(driver)
-
-
-@pytest.fixture(scope="function")
-def cart_page(driver):
-    return CartPage(driver)
 
 @allure.suite("Cart Management Tests")
 @pytest.mark.usefixtures("driver", "login_page", "products_page", "cart_page")

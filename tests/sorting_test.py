@@ -1,30 +1,5 @@
 import pytest
 import allure
-from pages.login_page import LoginPage
-from pages.products_page import ProductsPage
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-
-
-@pytest.fixture(scope="function")
-def driver():
-    """Fixture to set up and tear down WebDriver."""
-    options = Options()
-    options.add_experimental_option("detach", False)
-    driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
-
-    yield driver  # Provide the WebDriver instance to the test
-
-    driver.quit()  # Close browser after test
-
-@pytest.fixture(scope="function")
-def login_page(driver):
-    return LoginPage(driver)
-
-@pytest.fixture(scope="function")
-def products_page(driver):
-    return ProductsPage(driver)
 
 @allure.suite("Sort Functionality Tests")
 class TestSort:

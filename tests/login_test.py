@@ -1,24 +1,5 @@
 import allure
 import pytest
-from pages.login_page import LoginPage
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
-@pytest.fixture(scope="function")
-def driver():
-    """Fixture to set up and tear down WebDriver."""
-    options = Options()
-    options.add_experimental_option("detach", False)
-    driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
-
-    yield driver  # Provide the WebDriver instance to the test
-
-    driver.quit()  # Close browser after test
-
-@pytest.fixture(scope="function")
-def login_page(driver):
-    return LoginPage(driver)
 
 @allure.suite("Login Tests")
 class TestLogin:

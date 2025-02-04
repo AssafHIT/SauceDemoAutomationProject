@@ -1,6 +1,3 @@
-import time
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.by import By
 from pages.BasePage import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,7 +23,6 @@ class CartPage(BasePage):
         super().__init__(driver)
 
     def checkout(self):
-        #self.driver.find_element(*self.CHECKOUT_BTN).click()
         self.click(self.CHECKOUT_BTN)
 
     def fill_info(self, firstname, lastname, zip):
