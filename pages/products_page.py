@@ -60,7 +60,7 @@ class ProductsPage(BasePage):
         This could involve checking for the product name, ID, or cart icon count.
         """
         try:
-            # Replace the following line with the actual locator for the cart item
+
             cart_item_locator = (By.CSS_SELECTOR, f"#cart_item_{product_index}")
             self.driver.find_element(*cart_item_locator)
             return True
