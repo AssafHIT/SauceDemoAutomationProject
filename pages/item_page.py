@@ -17,5 +17,4 @@ class ItemPage(BasePage):
         self.click(self._BACK)
 
     def get_product_title(self):
-        title =  self.get_text(self._TITLE)
-        return title
+        return self.get_text(self._TITLE)

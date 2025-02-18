@@ -28,19 +28,10 @@ class CartPage(BasePage):
         self.fill_text(self._LAST_NAME, lastname)
         self.fill_text(self._ZIP, zip)
         self.click(self._CONTINUE_BTN)
-        try:
-            # Wait for the Finish button to be clickable (timeout of 10 seconds)
-            WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(self._FINISH_BTN)
-            )
-            # Click the Finish button
-            self.click(self._FINISH_BTN)
-        except Exception as e:
-            print(f"Failed to click the Finish button: {e}")
+        self.click(self._FINISH_BTN)
 
     def get_products_titles(self):
         return [element.text for element in self.driver.find_elements(*self._PRODUCTS_TITLES)]
-
 
     def remove_item_by_index(self, index):
         cart_items = self.driver.find_elements(*self._CART_ITEMS)
@@ -58,6 +49,7 @@ class CartPage(BasePage):
 
     def continue_click(self):
         self.click(self._CONTINUE_BTN)
+
     def finish_click(self):
         self.click(self._FINISH_BTN)
 
