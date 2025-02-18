@@ -6,12 +6,11 @@ from pages.BasePage import BasePage
 
 class ProductsPage(BasePage):
 
-    PRODUCT_NAME = (By.CSS_SELECTOR, ".inventory_item_name")
-    SHOPPING_CART = (By.CSS_SELECTOR, ".shopping_cart_link")
-    SORT_SELECT = (By.CSS_SELECTOR, ".product_sort_container")
-    PRODUCT_PRICES = (By.CSS_SELECTOR, ".inventory_item_price")
-    CART_COUNT = (By.CSS_SELECTOR, ".shopping_cart_badge")
-
+    _PRODUCT_NAME = (By.CSS_SELECTOR, ".inventory_item_name")
+    _SHOPPING_CART = (By.CSS_SELECTOR, ".shopping_cart_link")
+    _SORT_SELECT = (By.CSS_SELECTOR, ".product_sort_container")
+    _PRODUCT_PRICES = (By.CSS_SELECTOR, ".inventory_item_price")
+    _CART_COUNT = (By.CSS_SELECTOR, ".shopping_cart_badge")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -31,23 +30,23 @@ class ProductsPage(BasePage):
 
 
     def go_to_shopping_cart(self):
-        self.click(self.SHOPPING_CART)
+        self.click(self._SHOPPING_CART)
 
     def choose_sorting(self, index):
-        dropdown = self.driver.find_element(*self.SORT_SELECT)
+        dropdown = self.driver.find_element(*self._SORT_SELECT)
         select = Select(dropdown)
         select.select_by_index(index)
 
     def get_product_prices(self):
-        prices = self.driver.find_elements(*self.PRODUCT_PRICES)
+        prices = self.driver.find_elements(*self._PRODUCT_PRICES)
         return [float(price.text.replace('$', '').strip()) for price in prices]
 
     def get_product_names(self):
-        names = self.driver.find_elements(*self.PRODUCT_NAME)
+        names = self.driver.find_elements(*self._PRODUCT_NAME)
         return names
 
     def get_cart_count(self):
-        count = int(self.driver.find_element(*self.CART_COUNT).text)
+        count = int(self.driver.find_element(*self._CART_COUNT).text)
         return int(count)
 
     def get_single_product_name(self, index):
@@ -55,10 +54,6 @@ class ProductsPage(BasePage):
         return self.get_text(product_selector)
 
     def is_cart_item_present(self, product_index):
-        """
-        Check if the cart icon indicates the product is still in the cart.
-        This could involve checking for the product name, ID, or cart icon count.
-        """
         try:
 
             cart_item_locator = (By.CSS_SELECTOR, f"#cart_item_{product_index}")

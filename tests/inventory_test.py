@@ -7,8 +7,6 @@ from selenium.common.exceptions import TimeoutException
 @allure.suite("Inventory Management Tests")
 class TestInventory:
 
-    base_url = "https://www.saucedemo.com"
-
     @pytest.mark.critical
     @pytest.mark.parametrize(
         "item_count, description",
@@ -19,10 +17,8 @@ class TestInventory:
     )
     @allure.title("{description}")
     @allure.description("This test validates adding items to the cart updates the cart count correctly.")
-    def test_01_add_items_to_cart(self, driver, item_count, description, login_page, products_page):
-        driver.get(self.base_url)
+    def test_01_add_items_to_cart(self, setup, item_count, description, login_page, products_page):
         login_page.fill_info("standard_user", "secret_sauce")
-
 
         available_products = list(range(1, 7))
         for _ in range(item_count):
@@ -36,8 +32,7 @@ class TestInventory:
     @pytest.mark.high
     @allure.title("Remove Item from Cart Test")
     @allure.description("This test validates removing an item from the cart decreases the cart count correctly.")
-    def test_02_remove_item_from_cart(self, driver, login_page, products_page):
-        driver.get(self.base_url)
+    def test_02_remove_item_from_cart(self, setup, login_page, products_page):
         login_page.fill_info("standard_user", "secret_sauce")
 
         product_index = random.randint(1, 6)
@@ -48,8 +43,8 @@ class TestInventory:
         products_page.remove_from_cart(product_index)
 
         try:
-            WebDriverWait(driver, 10).until(
-                lambda driver: not products_page.is_cart_item_present(product_index)
+            WebDriverWait(setup, 10).until(
+                lambda setup: not products_page.is_cart_item_present(product_index)
             )
             updated_cart_count = 0
         except TimeoutException:
@@ -63,8 +58,7 @@ class TestInventory:
     @pytest.mark.medium
     @allure.title("Validate Product Details Test")
     @allure.description("This test opens a product details page and validates the correct product details are displayed.")
-    def test_03_validate_product_details(self, driver, login_page, products_page, item_page):
-        driver.get(self.base_url)
+    def test_03_validate_product_details(self, setup, login_page, products_page, item_page):
         login_page.fill_info("standard_user", "secret_sauce")
 
         product_index = random.randint(1, 6)

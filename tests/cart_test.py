@@ -3,13 +3,12 @@ import allure
 import pytest
 
 @allure.suite("Cart Management Tests")
-@pytest.mark.usefixtures("driver", "login_page", "products_page", "cart_page")
+@pytest.mark.usefixtures("setup", "login_page", "products_page", "cart_page")
 class TestCart:
-    base_url = "https://www.saucedemo.com"
 
     @pytest.mark.critical
-    def test_01_view_cart(self, login_page, products_page, cart_page, driver):
-        driver.get(self.base_url)
+    def test_01_view_cart(self, login_page, products_page, cart_page, setup):
+
         login_page.fill_info("standard_user", "secret_sauce")
 
         product_index = random.randint(1, 6)
@@ -23,8 +22,7 @@ class TestCart:
         assert product_name in cart_product_titles, f"Product '{product_name}' not found in the cart!"
 
     @pytest.mark.parametrize("product_index", [1, 2, 3, 4, 5, 6])
-    def test_02_remove_item_from_cart(self, login_page, products_page, cart_page, driver, product_index):
-        driver.get(self.base_url)
+    def test_02_remove_item_from_cart(self, login_page, products_page, cart_page, setup, product_index):
         login_page.fill_info("standard_user", "secret_sauce")
 
         products_page.add_to_cart(product_index)
@@ -40,29 +38,25 @@ class TestCart:
         ("Assaf", "", "12345", "Error: Last Name is required"),
         ("Assaf", "Yehezkel", "", "Error: Postal Code is required"),
     ])
-    def test_03_invalid_checkout_info(self, login_page, products_page, cart_page, driver, firstname, lastname, zip,
+    def test_03_invalid_checkout_info(self, login_page, products_page, cart_page, setup, firstname, lastname, zip,
                                       expected_error):
-        driver.get(self.base_url)
         login_page.fill_info("standard_user", "secret_sauce")
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
         products_page.go_to_shopping_cart()
         cart_page.checkout()
-
         cart_page.fill_info(firstname=firstname, lastname=lastname, zip=zip)
 
         assert cart_page.get_info_error_message() == expected_error, "Purchase shouldn't continue!"
 
-    def test_04_successful_checkout(self, login_page, products_page, cart_page, driver):
-        driver.get(self.base_url)
+    def test_04_successful_checkout(self, login_page, products_page, cart_page, setup):
         login_page.fill_info("standard_user", "secret_sauce")
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
         products_page.go_to_shopping_cart()
         cart_page.checkout()
-
         cart_page.fill_info(firstname="Assaf", lastname="Yehezkel", zip="12345")
 
         assert cart_page.get_checkout_message() == "Thank you for your order!", "Failed purchase!"

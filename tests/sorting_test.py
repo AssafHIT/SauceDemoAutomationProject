@@ -4,8 +4,6 @@ import allure
 @allure.suite("Sort Functionality Tests")
 class TestSort:
 
-    base_url = "https://www.saucedemo.com"
-
     @pytest.mark.critical
     @pytest.mark.parametrize(
         "sorting_option, is_descending, attribute, description",
@@ -18,17 +16,7 @@ class TestSort:
     )
     @allure.title("{description}")
     @allure.description("This test validates product sorting by {attribute}.")
-    def test_01_sort_functionality(self, driver, sorting_option, is_descending, attribute, description, login_page, products_page):
-        """
-        Generalized test for validating sorting functionality.
-
-        :param driver: WebDriver instance
-        :param sorting_option: Sorting dropdown option index
-        :param is_descending: Whether sorting is expected to be descending
-        :param attribute: Attribute to validate (price or name)
-        :param description: Test description for Allure report
-        """
-        driver.get(self.base_url)
+    def test_01_sort_functionality(self, setup, sorting_option, is_descending, attribute, description, login_page, products_page):
         login_page.fill_info("standard_user", "secret_sauce")
         products_page.choose_sorting(sorting_option)
 

@@ -4,8 +4,6 @@ import pytest
 @allure.suite("Login Tests")
 class TestLogin:
 
-    base_url = "https://www.saucedemo.com"  # Base URL for the tests
-
     @pytest.mark.critical
     @pytest.mark.parametrize(
         "username, password, expected_url, expected_error_message, description",
@@ -25,14 +23,12 @@ class TestLogin:
         ],
     )
     @allure.title("{description}")
-    def test_01_login(self, driver, username, password, expected_url, expected_error_message, description, login_page):
-        """Data-driven test for login functionality."""
-        driver.get(self.base_url)  # Navigate to the base URL
+    def test_01_login(self, setup, username, password, expected_url, expected_error_message, description, login_page):
         login_page.fill_info(username, password)
 
         if expected_url:
             # Valid login case
-            assert driver.current_url == expected_url, f"Expected {expected_url}, but got {driver.current_url}."
+            assert setup.current_url == expected_url, f"Expected {expected_url}, but got {setup.current_url}."
         else:
             # Invalid login case
             error_message = login_page.get_error_message()
