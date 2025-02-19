@@ -7,7 +7,6 @@ from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
 from utils.config import ConfigReader
 
-
 @pytest.fixture(scope="function")
 def setup():
     """Fixture to set up and tear down WebDriver."""

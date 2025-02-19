@@ -9,6 +9,10 @@ class TestCart:
     # Using data from config.ini:
     valid_username = ConfigReader.read_config("login", "username")
     valid_password = ConfigReader.read_config("login", "password")
+    user_firstname = ConfigReader.read_config("user_info", "firstname")
+    user_lastname = ConfigReader.read_config("user_info", "lastname")
+    user_zip = ConfigReader.read_config("user_info", "zip")
+
     @pytest.mark.critical
     def test_01_view_cart(self, login_page, products_page, cart_page, setup):
 
@@ -37,9 +41,9 @@ class TestCart:
         assert cart_page.get_cart_items() == [], "Cart count should be 0 after removing the item."
 
     @pytest.mark.parametrize("firstname, lastname, zip, expected_error", [
-        ("", "Yehezkel", "12345", "Error: First Name is required"),
-        ("Assaf", "", "12345", "Error: Last Name is required"),
-        ("Assaf", "Yehezkel", "", "Error: Postal Code is required"),
+        ("", user_lastname, user_zip, "Error: First Name is required"),
+        (user_firstname, "", user_zip, "Error: Last Name is required"),
+        (user_firstname, user_lastname, "", "Error: Postal Code is required"),
     ])
     def test_03_invalid_checkout_info(self, login_page, products_page, cart_page, setup, firstname, lastname, zip,
                                       expected_error):
@@ -60,6 +64,6 @@ class TestCart:
         products_page.add_to_cart(product_index)
         products_page.go_to_shopping_cart()
         cart_page.checkout()
-        cart_page.fill_info(firstname="Assaf", lastname="Yehezkel", zip="12345")
+        cart_page.fill_info(firstname = self.user_firstname, lastname = self.user_lastname, zip = self.user_zip)
 
         assert cart_page.get_checkout_message() == "Thank you for your order!", "Failed purchase!"
