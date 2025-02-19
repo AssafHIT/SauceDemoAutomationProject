@@ -1,4 +1,6 @@
 import random
+import time
+
 import allure
 import pytest
 from utils.config import ConfigReader
@@ -61,9 +63,13 @@ class TestCart:
         login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
+        time.sleep(1)
         products_page.add_to_cart(product_index)
+        time.sleep(1)
         products_page.go_to_shopping_cart()
+        time.sleep(1)
         cart_page.checkout()
+        time.sleep(1)
         cart_page.fill_info(firstname = self.user_firstname, lastname = self.user_lastname, zip = self.user_zip)
-
+        time.sleep(1)
         assert cart_page.get_checkout_message() == "Thank you for your order!", "Failed purchase!"
