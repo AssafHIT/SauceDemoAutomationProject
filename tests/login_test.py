@@ -2,7 +2,6 @@ import allure
 import pytest
 from utils.config import ConfigReader
 
-
 @allure.suite("Login Tests")
 class TestLogin:
     # Using data from config.ini:

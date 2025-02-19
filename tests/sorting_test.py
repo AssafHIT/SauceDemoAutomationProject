@@ -1,9 +1,12 @@
 import pytest
 import allure
+from utils.config import ConfigReader
 
 @allure.suite("Sort Functionality Tests")
 class TestSort:
-
+    # Using data from config.ini:
+    valid_username = ConfigReader.read_config("login", "username")
+    valid_password = ConfigReader.read_config("login", "password")
     @pytest.mark.critical
     @pytest.mark.parametrize(
         "sorting_option, is_descending, attribute, description",
@@ -17,7 +20,7 @@ class TestSort:
     @allure.title("{description}")
     @allure.description("This test validates product sorting by {attribute}.")
     def test_01_sort_functionality(self, setup, sorting_option, is_descending, attribute, description, login_page, products_page):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
         products_page.choose_sorting(sorting_option)
 
         # Validate sorting

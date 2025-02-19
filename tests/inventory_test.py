@@ -3,10 +3,15 @@ import pytest
 import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
+from utils.config import ConfigReader
 
 @allure.suite("Inventory Management Tests")
 class TestInventory:
+    # Using data from config.ini:
+    valid_username = ConfigReader.read_config("login", "username")
+    valid_password = ConfigReader.read_config("login", "password")
 
+    @pytest.mark.critical
     @pytest.mark.critical
     @pytest.mark.parametrize(
         "item_count, description",
@@ -18,7 +23,7 @@ class TestInventory:
     @allure.title("{description}")
     @allure.description("This test validates adding items to the cart updates the cart count correctly.")
     def test_01_add_items_to_cart(self, setup, item_count, description, login_page, products_page):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         available_products = list(range(1, 7))
         for _ in range(item_count):
@@ -33,7 +38,7 @@ class TestInventory:
     @allure.title("Remove Item from Cart Test")
     @allure.description("This test validates removing an item from the cart decreases the cart count correctly.")
     def test_02_remove_item_from_cart(self, setup, login_page, products_page):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
@@ -59,7 +64,7 @@ class TestInventory:
     @allure.title("Validate Product Details Test")
     @allure.description("This test opens a product details page and validates the correct product details are displayed.")
     def test_03_validate_product_details(self, setup, login_page, products_page, item_page):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
         expected_product_name = products_page.get_single_product_name(product_index)

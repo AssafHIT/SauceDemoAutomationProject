@@ -5,6 +5,8 @@ from pages.cart_page import CartPage
 from pages.item_page import ItemPage
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
+from utils.config import ConfigReader
+
 
 @pytest.fixture(scope="function")
 def setup():
@@ -12,7 +14,7 @@ def setup():
     options = Options()
     options.add_experimental_option("detach", False)
     driver = webdriver.Chrome(options=options)
-    driver.get("https://www.saucedemo.com/")
+    driver.get(ConfigReader.read_config("settings", "base_url"))
     driver.maximize_window()
 
     yield driver

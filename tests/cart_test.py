@@ -1,15 +1,18 @@
 import random
 import allure
 import pytest
+from utils.config import ConfigReader
 
 @allure.suite("Cart Management Tests")
 @pytest.mark.usefixtures("setup", "login_page", "products_page", "cart_page")
 class TestCart:
-
+    # Using data from config.ini:
+    valid_username = ConfigReader.read_config("login", "username")
+    valid_password = ConfigReader.read_config("login", "password")
     @pytest.mark.critical
     def test_01_view_cart(self, login_page, products_page, cart_page, setup):
 
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
@@ -23,7 +26,7 @@ class TestCart:
 
     @pytest.mark.parametrize("product_index", [1, 2, 3, 4, 5, 6])
     def test_02_remove_item_from_cart(self, login_page, products_page, cart_page, setup, product_index):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         products_page.add_to_cart(product_index)
 
@@ -40,7 +43,7 @@ class TestCart:
     ])
     def test_03_invalid_checkout_info(self, login_page, products_page, cart_page, setup, firstname, lastname, zip,
                                       expected_error):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
@@ -51,7 +54,7 @@ class TestCart:
         assert cart_page.get_info_error_message() == expected_error, "Purchase shouldn't continue!"
 
     def test_04_successful_checkout(self, login_page, products_page, cart_page, setup):
-        login_page.fill_info("standard_user", "secret_sauce")
+        login_page.fill_info(self.valid_username, self.valid_password)
 
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
