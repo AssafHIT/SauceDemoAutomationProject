@@ -12,6 +12,7 @@ Welcome to the **Selenium Test Automation Framework** for **SauceDemo**! This fr
 This framework performs automated tests on user workflows such as logging in, adding/removing items to the cart, sorting products, and validating product details.
 
 ---
+![Successful Purchase](SwagLabsGIF.gif)
 
 ## 🚀 Features
 
