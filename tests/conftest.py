@@ -5,6 +5,7 @@ from pages.cart_page import CartPage
 from pages.item_page import ItemPage
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
+from pages.sidebar_page import SideBarPage
 from utils.config import ConfigReader
 
 @pytest.fixture(scope="function")
@@ -34,3 +35,7 @@ def item_page(setup):
 @pytest.fixture(scope="function")
 def cart_page(setup):
     return CartPage(setup)
+
+@pytest.fixture(scope="function")
+def sidebar_page(setup):
+    return SideBarPage(setup)

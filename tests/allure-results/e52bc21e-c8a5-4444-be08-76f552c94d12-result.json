@@ -1,0 +1,1 @@
+{"name": "Validate Reset Button", "status": "skipped", "description": "This test validates the app reset functionality.", "start": 1740122004400, "stop": 1740122004400, "uuid": "907cde78-ce49-4b31-98b3-9cf5255dc2ea", "testCaseId": "bc4a154de334e7c950254be201313cdb", "fullName": "tests.sidebar_test.TestSidebar#test_03_app_reset_functionality"}

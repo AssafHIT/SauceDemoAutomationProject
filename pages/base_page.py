@@ -1,22 +1,24 @@
+import time
+
+from selenium.common import NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+
 
 class BasePage:
     def __init__(self, driver):
         self.driver: WebDriver = driver
 
     def highlight_element(self, locator, color: str):
-        # Find the element
         element = self.driver.find_element(*locator)
-        # Store the original style (to revert after 300 mills)
+        # Store the original style (to revert after)
         original_style = element.get_attribute("style")
-
-        # Create the new style with the given color
+        # Create the new style
         new_style = f"background-color: {color}; {original_style}"
 
-        # Apply the new style
+        # Apply new style
         self.driver.execute_script("""
                       var element = arguments[0];
                       var new_style = arguments[1];
@@ -53,10 +55,31 @@ class BasePage:
         el = self.driver.find_element(*locator)
         el.clear()
         el.send_keys(txt)
+        time.sleep(1)
 
     def get_text(self, locator) -> str:
         self.highlight_element(locator, "Orange")
         return self.driver.find_element(*locator).text
 
+    def hover_over_element(self, locator):
+        actions = ActionChains(self.driver)
+        actions.move_to_element(locator).perform()
 
+    def scroll_to_element(self, locator):
+        element = self.driver.find_element(*locator)
+        self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element)
 
+    def wait_for_element_visible(self, locator, timeout=10):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.visibility_of_element_located(locator)
+        )
+
+    def take_screenshot(self, file_name="screenshot.png"):
+        self.driver.save_screenshot(file_name)
+
+    def is_element_displayed(self, locator):
+        try:
+            element = self.driver.find_element(*locator)
+            return element.is_displayed()
+        except NoSuchElementException:
+            return False
