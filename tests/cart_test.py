@@ -50,14 +50,13 @@ class TestCart:
     def test_03_invalid_checkout_info(self, login_page, products_page, cart_page, setup, firstname, lastname, zip,
                                       expected_error):
         login_page.fill_info(self.valid_username, self.valid_password)
-
         product_index = random.randint(1, 6)
         products_page.add_to_cart(product_index)
         products_page.go_to_shopping_cart()
         cart_page.checkout()
-        cart_page.fill_info(firstname=firstname, lastname=lastname, zip=zip)
+        error_message = cart_page.fill_info(firstname=firstname, lastname=lastname, zip=zip)
 
-        assert cart_page.get_info_error_message() == expected_error, "Purchase shouldn't continue!"
+        assert error_message == expected_error, f"Expected error message: '{expected_error}', but got: '{error_message}'"
 
     def test_04_successful_checkout(self, login_page, products_page, cart_page, setup):
 
@@ -67,4 +66,6 @@ class TestCart:
         products_page.go_to_shopping_cart()
         cart_page.checkout()
         cart_page.fill_info(firstname = self.user_firstname, lastname = self.user_lastname, zip = self.user_zip)
+        cart_page.finish_click()
+
         assert cart_page.get_checkout_message() == "Thank you for your order!", "Failed purchase!"

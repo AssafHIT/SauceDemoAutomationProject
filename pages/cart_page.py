@@ -1,3 +1,5 @@
+from selenium.common import NoSuchElementException
+
 from pages.base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -28,7 +30,12 @@ class CartPage(BasePage):
         self.fill_text(self._LAST_NAME, lastname)
         self.fill_text(self._ZIP, zip)
         self.click(self._CONTINUE_BTN)
-        self.click(self._FINISH_BTN)
+
+        # Check if an error message exists before returning it
+        try:
+            return self.get_info_error_message()  # If an error exists, return it
+        except NoSuchElementException:
+            return None  # No error, return None (or simply omit return)
 
     def get_products_titles(self):
         return [element.text for element in self.driver.find_elements(*self._PRODUCTS_TITLES)]
@@ -54,7 +61,9 @@ class CartPage(BasePage):
         self.click(self._FINISH_BTN)
 
     def get_checkout_message(self):
-        return self.get_text(self._CHECKOUT_MESSAGE)
+        wait = WebDriverWait(self.driver, 10)  # Wait up to 10 seconds
+        success_message = wait.until(EC.visibility_of_element_located(self._CHECKOUT_MESSAGE)).text
+        return success_message
 
     def get_info_error_message(self):
         return self.get_text(self._CHECKOUT_INFO_ERROR_MSG)

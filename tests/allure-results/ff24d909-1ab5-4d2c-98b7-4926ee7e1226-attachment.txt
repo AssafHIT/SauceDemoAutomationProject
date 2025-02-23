@@ -1,1 +1,0 @@
-Current URL after navigating to about page: https://saucelabs.com/
