@@ -31,7 +31,7 @@ class TestProductAPI:
         assert response.ok, f"Expected response to be OK, but got status code {response.status_code}"
 
     @pytest.mark.parametrize("product_id", [2])  # Brackets for Passing id as Int
-    def test_get_single_user_existing_keys(self, product_id):
+    def test_get_single_product_existing_keys(self, product_id):
         response = requests.get(f"{api_base_url}/products/{product_id}")
         json_response = response.json()
-        assert 'title' in json_response.keys() and 'price' in json_response.keys(), "Product is missing title and price"
+        assert all(field in json_response for field in ['price', 'title']), "Product is missing title and price"

@@ -18,3 +18,11 @@ def validate_product_field(product, field):
         assert isinstance(product['description'], str) and len(product['description']) > 0, f"Product description is invalid: {product['description']}"
     elif field == 'image':  # Check for valid 'image'
         assert isinstance(product['image'], str) and len(product['image']) > 0, f"Product image is invalid: {product['image']}"
+
+def validate_user_field(user, field):
+    if field == 'id':  # ID should be a positive (int)
+        assert isinstance(user['id'], int) and user['id'] > 0, f"User ID is invalid: {user['id']}"
+    elif field == 'email':  # Email should be a valid email format
+        assert isinstance(user['email'], str) and '@' in user['email'], f"User email is invalid: {user['email']}"
+    elif field == 'username':  # Username should be a non-empty string
+        assert isinstance(user['username'], str) and len(user['username']) > 0, f"User username is invalid: {user['username']}"
