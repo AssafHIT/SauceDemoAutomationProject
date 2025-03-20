@@ -2,7 +2,7 @@ import configparser
 import sys
 class ConfigReader:
 
-    @staticmethod # ניתן לגשת ישירות בלי ליצור אובייקטים מהCLASS
+    @staticmethod
     def read_config(section, key):
         root_dir = sys.path[0]
 

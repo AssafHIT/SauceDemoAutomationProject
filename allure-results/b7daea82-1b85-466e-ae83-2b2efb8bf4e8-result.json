@@ -1,0 +1,1 @@
+{"name": "test_02_remove_item_from_cart[4]", "status": "skipped", "parameters": [{"name": "product_index", "value": "4"}], "start": 1742468927980, "stop": 1742468927980, "uuid": "15848b76-01e7-4e0f-9821-039606ac7a22", "testCaseId": "5a618756230c792c7fb8538f2035fb9e", "fullName": "tests.cart_test.TestCart#test_02_remove_item_from_cart"}
