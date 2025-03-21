@@ -1,6 +1,6 @@
 ## 🛒 Sauce Demo Test Automation Framework
 
-Welcome to the **Selenium Test Automation Framework** for **SauceDemo**! This framework automates functional and UI testing for the SauceDemo website, an e-commerce platform used for test automation practice. The goal is to ensure high-quality and bug-free interactions for end users.
+Welcome to the **Selenium Test Automation Framework** for **SauceDemo**! This framework automates both **functional/UI testing** and **API testing** for the SauceDemo website, an e-commerce platform used for test automation practice. The goal is to ensure high-quality, bug-free interactions for end users, as well as validate the correctness and reliability of the backend APIs.
 
 🔧 **Built With:**
 - **Selenium** 🐍 - For automating browser actions
