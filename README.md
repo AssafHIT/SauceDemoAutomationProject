@@ -42,6 +42,7 @@ In addition to the UI tests, extensive API tests have been implemented to ensure
 - **Cart API Testing**: Validates the functionality of cart operations, including adding/removing products, updating cart details, and checking cart contents. Ensures that all cart-related APIs perform as expected.
 
 These API tests are part of the automated test suite and ensure comprehensive validation of both backend functionality and data integrity. Running the tests will provide valuable insights into the correctness and reliability of the API, from data creation to manipulation and deletion.
+##
 ---
 ## 🔍 Summary
 
