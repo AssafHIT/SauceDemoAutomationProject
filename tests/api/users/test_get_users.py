@@ -28,8 +28,9 @@ class TestUserAPI:
         assert response.status_code == 200, f"Expected status code 200, but got {response.status_code}"
         assert response.ok, f"Expected response to be OK, but got status code {response.status_code}"
 
-    @pytest.mark.parametrize("user_id", [2])  # Brackets for Passing id as Int
+    @pytest.mark.parametrize("user_id", [2])
     def test_get_single_user_existing_keys(self, user_id):
+
         response = requests.get(f"{api_base_url}/users/{user_id}")
         json_response = response.json()
         assert all(field in json_response for field in ['id', 'email', 'username']), "User is missing important information"
